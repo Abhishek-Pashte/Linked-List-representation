@@ -1,0 +1,289 @@
+#include<iostream>
+#include<string.h>
+using namespace std;
+class node
+{
+    public:
+    int PRN,m;
+    string name;
+    node *next;
+    node *president,*first,*member,*p,*secretary,*q;
+    
+    void insert_president();
+    void insert_secretary();
+    void insert_member();
+    void display();
+    void del();
+    void no_of_members();
+    void reverse();
+    void combine(node &d);
+    node()          //constructor
+    {
+        president=first=member=p=secretary=q=NULL;
+    }
+};
+void node::insert_president()
+{
+    president = new node;       
+    cout<<"Enter PRN no. of president : ";
+    cin>>president->PRN;
+    cout<<"Enter Name of president : ";
+    cin>>president->name;
+    president->next=NULL;
+    if(first!=NULL)
+    {
+        president->next=first;
+        first=president;
+    }
+    else
+    {
+        first=president;
+    }
+}
+void node::insert_member()
+{
+    member=new node;        //Dynamically allocating memory for member.
+    cout<<"Enter PRN no. of member : ";
+    cin>>member->PRN;
+    cout<<"Enter Name of member : ";
+    cin>>member->name;
+    member->next=NULL;
+    cout<<"Enter PRN after which member is to be inserted : ";
+    cin>>m;
+    p=president;
+    while(p->PRN!=m)        //Traversing through list to reach at desired node.
+    {
+        p=p->next;
+    }
+    member->next=p->next;   //Connecting node(next to the new member) and new member.
+    p->next=member;         //Connecting node(previous to the new member) and new member.
+}
+void node::insert_secretary()
+{
+    p=president;            //p is pointing to first node.
+    while(p->next!=NULL)    //Traversing through list to reach to last node.
+    {
+        p=p->next;
+    }
+    secretary=new node;     //Dynamically allocating memory for secretary node.
+    cout<<"Enter PRN no. of secretary : ";
+    cin>>secretary->PRN;
+    cout<<"Enter name of secretary : ";
+    cin>>secretary->name;
+    secretary->next=NULL;
+    p->next=secretary;
+}
+void node::del()
+{
+    int ch;         
+    cout<<"\nWhich node you wants to delete:\n1)Delete President\n2)Delete member\n3)Delete Secretary"<<endl;
+    cout<<"Enter your choice : ";   
+    cin>>ch;
+    switch(ch)
+    {
+        case 1:         //Delete President node
+            if(president==NULL)
+            {
+                cout<<"\nLinked list not exist";
+            }    
+            else
+            {
+                node *temp=president;       //temp pointing to head.
+                president=temp->next;       //Now head is pointing to next(second node) node of list.
+                delete temp;                //Deleting first node.
+                cout<<"\nPresident node deleted successfully";
+            }
+            break;
+        
+        case 2:         //Delete intermediate node
+            int c,i;
+            cout<<"\nEnter node number which wants to be delete : ";
+            cin>>c;
+            q=president;                    //q is holding address of first node.
+            for (i=2;i<c;i++)               //Traversing through list to reach to the one node before the node which has to be deleted
+            {
+                q=q->next;
+                if(q==NULL)
+                {
+                    cout<<"Node not found!!!"<<endl;
+                }
+            }
+            if(i==c)
+            {
+                p=q->next;                  //p is holding address of node which has to be deleted.
+                q->next=p->next;            //Connecting nodes whose intermediate node is deleted.
+                delete p;                   //Deleting node.
+                cout<<"\nNode deleted successfully";
+            }
+            break;
+        case 3:         //Delete Secretary node
+            if(president==NULL)
+            {
+                cout<<"Linked list not exist";
+            }
+            else
+            {
+                node *p=president;          //p is holding address of first node.
+                while(p->next->next!=NULL)  //Traversing through list to reach at second last node of list. 
+                {
+                   p=p->next;
+                }
+                node *temp=p->next;         //temp is pointing to last node which has to be deleted.
+                p->next=NULL;               //Making second last node's next field to NULL.
+                delete temp;                //Deleting node.
+                cout<<"Secretary node deleted successfully";
+                break;
+            }
+        default:
+            cout<<"Invalid Input "<<endl;
+    }
+}
+void node::no_of_members()
+{
+    if (president==NULL)            //Checking list is empty or not.
+    {
+        cout<<"Linked list not exist"<<endl;
+    }
+    else
+    {
+        int cnt=1;                  //Initializing counting variable.
+        node *p;
+        p=president;
+        while (p->next!=NULL)       //Traversing through all the list.
+        {
+            p=p->next;
+            cnt++;
+        }
+        cout<<"Total number of members : "<<cnt;
+    }
+}
+void node::display()
+{
+    p=president;                    //p is pointing to head.
+    if(p==NULL)
+    {
+        cout<<"\nLinked list not exist!!!"<<endl;
+    }
+    while(p!=NULL)                  //Traversing through all the list.
+    {
+        cout<<endl;
+        cout<<"\nPRN no:"<<p->PRN;
+        cout<<"\nName : "<<p->name;
+        p=p->next;
+    }
+}
+
+void node::reverse()
+{
+    node *p,*q,*r;
+    if(president==NULL)
+    {
+        cout<<"Linked list is empty";
+    }
+    p=president;
+    q=p->next;
+    p->next=NULL;
+    while(q!=NULL)
+    {
+        r=q->next;
+        q->next=p;
+        p=q;
+        q=r;
+    }
+    president=p;
+    cout<<"\nLinked list reversed successfully"<<endl;
+}
+void node::combine(node &d)
+{
+    node *p,*q;
+    p=d.president;                  //p is pointing to President of second linked list.
+    if(p==NULL)
+    {
+        cout<<"\nList 2 is empty";
+        return ;
+    }
+    q=president;                    //q is pointing to President of fist linked list.
+    while(q->next!=NULL)            //Going to the last node of fist linked list.
+    {
+        q=q->next;
+    }
+    q->next=p;                      //Appending the second linked list.
+    d.president=NULL;               //Making head of second LL NULL. 
+    cout<<"\nLists are combined susseccfully";
+    display();
+}
+
+int main()
+{
+    node a,b,*obj;
+    obj=&a;
+    int opt,choice;
+    char ch;
+    x : cout<<"\nChoose list:\n1)Linked list A\n2)Linked list B"<<endl;
+    cin>>choice;
+    if(choice==1)
+    {
+        obj=&a;
+    }
+    else if(choice==2)
+    {
+        obj=&b;
+    }
+    else
+    {
+        goto x;
+    }
+    do
+    {
+        cout<<"-------------------------------"<<endl;
+        if(choice==1)
+        {
+            cout<<"---------Linked list 1---------"<<endl;
+        }
+        else
+        {
+            cout<<"---------Linked list 2---------"<<endl;
+        }
+        cout<<"1)Insert president\n2)Insert member\n3)Insert secretary\n4)Display\n5)Delete\n6)Total Number of members\n7)Reverse list\n8)Combine\n9)Select list\n10)Exit"<<endl;
+        cout<<"-------------------------------"<<endl;
+        cout<<"Enter your choice : ";
+        cin>>opt;
+        cout<<"-------------------------------"<<endl;
+        switch(opt)
+        {
+            case 1:
+            obj->insert_president();
+            break;
+            case 2:
+            obj->insert_member();
+            break;
+            case 3:
+            obj->insert_secretary();
+            break;
+            case 4:
+            obj->display();
+            break;
+            case 5:
+            obj->del();
+            break;
+            case 6:
+            obj->no_of_members();
+            break;
+            case 7:
+            obj->reverse();
+            break;
+            case 8:
+            a.combine(b);
+            break;
+            case 9:
+            goto x;
+            case 10:
+            exit(0);
+            default:
+            cout<<"Invalid Choice";
+        }
+        cout<<"\nDo you wants to continue(Y or N) : ";
+        cin>>ch;
+    }while(ch=='Y' or ch=='y');
+    return 0;
+}
